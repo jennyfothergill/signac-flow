@@ -243,13 +243,6 @@ class JobOperation(object):
         # script engine later.
         keys_set_by_user = set(directives.keys())
 
-        directives.setdefault(
-            'np', directives.get('nranks', 1) * directives.get('omp_num_threads', 1))
-        directives.setdefault('ngpu', 0)
-        directives.setdefault('nranks', 0)
-        directives.setdefault('omp_num_threads', 0)
-        directives.setdefault('processor_fraction', 1)
-
         # Evaluate strings and callables for job:
         def evaluate(value):
             if value and callable(value):
@@ -258,6 +251,13 @@ class JobOperation(object):
                 return value.format(job=job)
             else:
                 return value
+
+        directives.setdefault(
+            'np', evaluate(directives.get('nranks', 1)) * evaluate(directives.get('omp_num_threads', 1)))
+        directives.setdefault('ngpu', 0)
+        directives.setdefault('nranks', 0)
+        directives.setdefault('omp_num_threads', 0)
+        directives.setdefault('processor_fraction', 1)
 
         # We use a special dictionary that allows us to track all keys that have been
         # evaluated by the template engine and compare them to those explicitly set
