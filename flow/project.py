@@ -981,7 +981,7 @@ class FlowProject(six.with_metaclass(_FlowProjectClass,
         :type parameters:
             list of str
         :param skip_active:
-            Only print jobs that are currently inactive.
+            (deprecated) Only print jobs that are currently inactive.
         :type skip_active:
             bool
         :param param_max_width:
@@ -1057,7 +1057,7 @@ class FlowProject(six.with_metaclass(_FlowProjectClass,
                 template = 'status.jinja'
 
         if skip_active:
-            raise NotImplementedError("The deprecated --skip-active option is no longer supported.")
+            raise NotImplementedError("The (deprecated) skip_active option is no longer supported.")
 
         # initialize jinja2 template evnronment and necessary filters
         template_environment = self._template_environment()
@@ -1100,7 +1100,6 @@ class FlowProject(six.with_metaclass(_FlowProjectClass,
             :type all_ops:
                 Boolean
             """
-
             if scheduler_status_code[job_op['scheduler_status']] != 'U' or \
                job_op['eligible'] or all_ops:
                 return True
@@ -1257,7 +1256,7 @@ class FlowProject(six.with_metaclass(_FlowProjectClass,
             column_width_operation = 5
             status_legend = ' '.join('[{}]:{}'.format(v, k) for k, v in self.ALIASES.items())
 
-            for key, value in self._operations.items():
+            for key in self._operations:
                 column_width_operation = max(column_width_operation, len(key))
             for job in tmp:
                 column_width_total_label = max(
